@@ -1,7 +1,7 @@
 package Client.Part1;
 
-import Client.Part2.Record;
 import Client.Part2.Data;
+import Client.Part2.Record;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
@@ -11,30 +11,29 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class Client {
-  private static final int NUMTHREADS = 32;
-  private static final int NUMSKIERS = 20000;
-  private static final int NUMLIFTS = 40;
-  private static final int NUMRUNS = 20;
+public class SkierClient {
+  private static final int NUM_THREADS = 32;
+  private static final int NUM_SKIERS = 20000;
+  private static final int NUM_LIFTS = 40;
+  private static final int NUM_RUNS = 20;
   private static final int DEFAULTTHREADMAXCAPACITY = 4000;
   private static final int DEFAULTPOSTMAXCAPACITY = 400000;
   private static final int DIVIDEND = 10;
   private static final int TIMEOUT = 30;
-  private static final String ip = "http://172.31.83.150";
+  private static final String ip = "http://localhost";
   private static final String port = "8080";
-  private static BlockingQueue<Thread> phases = new ArrayBlockingQueue<>(DEFAULTTHREADMAXCAPACITY);
+  private static BlockingQueue<Thread> phases = new ArrayBlockingQueue<Thread>(DEFAULTTHREADMAXCAPACITY);
   private static int numReq = 0;
   private static int numRes = 0;
   private static int numFailure = 0;
-  private static BlockingQueue<Record> records = new ArrayBlockingQueue<>(DEFAULTPOSTMAXCAPACITY);
+  private static BlockingQueue<Record> records = new ArrayBlockingQueue<Record>(DEFAULTPOSTMAXCAPACITY);
   private static Logger logger = Logger.getLogger(Thread.class.getName());
-
 
   public static void main(String[] arg) throws Exception {
 
     CountDownLatch initializeFirstCountDown = new CountDownLatch(0);
-    CountDownLatch firstCountDown = new CountDownLatch(NUMTHREADS/4/DIVIDEND);
-    CountDownLatch secondCountDown  = new CountDownLatch(NUMTHREADS/DIVIDEND);
+    CountDownLatch firstCountDown = new CountDownLatch(NUM_THREADS /4/DIVIDEND);
+    CountDownLatch secondCountDown  = new CountDownLatch(NUM_THREADS /DIVIDEND);
 
     long wallStart = System.currentTimeMillis();
     phase1(initializeFirstCountDown, firstCountDown);
@@ -56,19 +55,18 @@ public class Client {
       numRes += thread.getSuccess();
     }
   }
-
   private static void phase1(CountDownLatch firstCountDown, CountDownLatch secondCountDown) {
-    int skierIdRange = NUMSKIERS/(NUMTHREADS/4);
+    int skierIdRange = NUM_SKIERS /(NUM_THREADS /4);
     int endTime = 90;
     try {
-      ExecutorService executorService = Executors.newFixedThreadPool(NUMTHREADS/4);
-      int runTimes = NUMRUNS/DIVIDEND * skierIdRange;
-      for (int i = 0; i < NUMTHREADS/4; i++) {
+      ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS /4);
+      int runTimes = NUM_RUNS /DIVIDEND * skierIdRange;
+      for (int i = 0; i < NUM_THREADS /4; i++) {
         Thread thread = new Thread(
-            ThreadLocalRandom.current().nextInt(skierIdRange * i,
-                skierIdRange * (i + 1)),
-            ThreadLocalRandom.current().nextInt(endTime),
-            ThreadLocalRandom.current().nextInt(NUMLIFTS),
+            skierIdRange * i + 1,
+                skierIdRange * (i + 1),
+            0, endTime,
+            NUM_LIFTS,
             runTimes, firstCountDown, secondCountDown, records, ip, port, logger);
         executorService.execute(thread);
         phases.add(thread);
@@ -83,16 +81,15 @@ public class Client {
   private static void phase2(CountDownLatch firstCountDown, CountDownLatch secondCountDown) {
     int startTime = 91;
     int endTime = 360;
-    int timeRange = ThreadLocalRandom.current().nextInt(endTime - startTime) + startTime;
-    int skierIdRange = NUMSKIERS / NUMTHREADS;
-    int runTimes = (int) (NUMRUNS * 0.8) * skierIdRange;
+    int skierIdRange = NUM_SKIERS / NUM_THREADS;
+    int runTimes = (int) (NUM_RUNS * 0.8) * skierIdRange;
     try {
-      ExecutorService executorService = Executors.newFixedThreadPool(NUMTHREADS);
-      for (int i = 0; i < NUMTHREADS; i++) {
+      ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
+      for (int i = 0; i < NUM_THREADS; i++) {
         Thread thread = new Thread(
-            ThreadLocalRandom.current().nextInt(skierIdRange * i,
-                skierIdRange * i + skierIdRange),
-            timeRange, ThreadLocalRandom.current().nextInt(NUMLIFTS) + 1,
+            skierIdRange * i + 1,
+                skierIdRange * (i + 1),
+            startTime, endTime, NUM_LIFTS,
             runTimes, firstCountDown, secondCountDown, records, ip, port, logger);
         executorService.execute(thread);
         phases.add(thread);
@@ -107,16 +104,15 @@ public class Client {
   private static void phase3(CountDownLatch firstCountDown) {
     int startTime = 361;
     int endTime = 420;
-    int skierIdRange = NUMSKIERS/(NUMTHREADS/4);
-    int timeRange = ThreadLocalRandom.current().nextInt(endTime-startTime)+startTime;
-    int runTimes = NUMRUNS/DIVIDEND;
+    int skierIdRange = NUM_SKIERS /(NUM_THREADS /4);
+    int runTimes = NUM_RUNS /DIVIDEND;
     try {
-      ExecutorService executorService = Executors.newFixedThreadPool(NUMTHREADS/4);
-      for (int i = 0; i < NUMTHREADS/4; i++) {
+      ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS /4);
+      for (int i = 0; i < NUM_THREADS /4; i++) {
         Thread thread = new Thread(
-            ThreadLocalRandom.current().nextInt(skierIdRange*i,
-                skierIdRange*i + skierIdRange),
-            timeRange, ThreadLocalRandom.current().nextInt(NUMLIFTS),
+            skierIdRange * i + 1,
+                skierIdRange * (i + 1),
+            startTime, endTime, NUM_LIFTS,
             runTimes, firstCountDown, null, records, ip, port, logger);
         executorService.execute(thread);
         phases.add(thread);

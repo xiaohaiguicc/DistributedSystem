@@ -63,7 +63,7 @@ public class Data {
     try {
       BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
           new FileOutputStream(
-              "/Users/TOKYO/Documents/GitHub/assignment1/src/main/java/client/part2/CSVFiles/records_1024threads.csv"),
+              "/Users/chenxicai/Desktop/DistributedSystem/assignment1/src/main/java/client/part2/CSVFiles/records_1024threads.csv"),
           "UTF-8"));
       for (Record record : records) {
         long currLatency = record.getLatency();
