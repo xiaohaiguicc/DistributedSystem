@@ -5,12 +5,14 @@ public class Record {
   private long endTime;
   private int responseCode;
   private String requestType;
+  private String url;
 
-  public Record(long startTime, long endTime, int responseCode) {
+  public Record(long startTime, long endTime, String requestType, int responseCode, String url) {
     this.startTime = startTime;
-    this.requestType = "POST";
+    this.requestType = requestType;
     this.endTime = endTime;
     this.responseCode = responseCode;
+    this.url = url;
   }
 
   public int getResponseCode() {
@@ -31,5 +33,9 @@ public class Record {
 
   public String getRequestType() {
     return requestType;
+  }
+
+  public String getUrl() {
+    return url;
   }
 }

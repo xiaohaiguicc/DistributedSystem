@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 public class Data {
   private long wallTime;
-  private long[] latencyStats = new long[5];
+  private double[] latencyStats = new double[5];
   private int requestCount;
   private int responseCount;
   private BlockingQueue<Record> records;
@@ -52,8 +52,8 @@ public class Data {
     Collections.sort(latency);
     latencyStats[0] = latencySum / latency.size();
     latencyStats[1] = latency.get(latency.size()/2-1);
-    latencyStats[2] = requestCount/ wallTime;
-    latencyStats[3] = latency.get(latency.size()*99/100-1);
+    latencyStats[2] = (double)requestCount / wallTime ;
+    latencyStats[3] = latency.get(latency.size() * 99/100-1);
     latencyStats[4] = latency.get(latency.size()-1);
 
   }
@@ -63,7 +63,7 @@ public class Data {
     try {
       BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
           new FileOutputStream(
-              "/Users/chenxicai/Desktop/Distributed_System/assignment2/src/main/java/Files/records_1024threads.csv"),
+              "/Users/chenxicai/Desktop/Distributed_System/assignment2/src/main/java/Files/records_64threads.csv"),
           "UTF-8"));
       for (Record record : records) {
         long currLatency = record.getLatency();

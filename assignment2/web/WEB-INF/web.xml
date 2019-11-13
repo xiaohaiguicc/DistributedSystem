@@ -20,4 +20,12 @@
     <servlet-name>ResortServlet</servlet-name>
     <url-pattern>/resorts/*</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>StatisticsServlet</servlet-name>
+    <servlet-class>Server.StatisticsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>StatisticsServlet</servlet-name>
+    <url-pattern>/statistics/*</url-pattern>
+  </servlet-mapping>
 </web-app>

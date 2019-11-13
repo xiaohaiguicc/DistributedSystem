@@ -2,6 +2,7 @@ package Client.Part1;
 
 import Client.Part2.Data;
 import Client.Part2.Record;
+import DAO.LiftRideDao;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
@@ -21,6 +22,7 @@ public class SkierClient {
   private static final int DIVIDEND = 10;
   private static final int TIMEOUT = 30;
   private static final String ip = "http://localhost";
+//  private static final String ip = "http://ec2-user@ec2-18-204-205-169.compute-1.amazonaws.com";
   private static final String port = "8080";
   private static BlockingQueue<Thread> phases = new ArrayBlockingQueue<Thread>(DEFAULTTHREADMAXCAPACITY);
   private static int numReq = 0;
@@ -28,6 +30,7 @@ public class SkierClient {
   private static int numFailure = 0;
   private static BlockingQueue<Record> records = new ArrayBlockingQueue<Record>(DEFAULTPOSTMAXCAPACITY);
   private static Logger logger = Logger.getLogger(Thread.class.getName());
+  private static final LiftRideDao liftRideDao = new LiftRideDao();
 
   public static void main(String[] arg) throws Exception {
 
@@ -67,7 +70,7 @@ public class SkierClient {
                 skierIdRange * (i + 1),
             0, endTime,
             NUM_LIFTS,
-            runTimes, firstCountDown, secondCountDown, records, ip, port, logger);
+            runTimes, firstCountDown, secondCountDown, records, ip, port, logger, liftRideDao);
         executorService.execute(thread);
         phases.add(thread);
       }
@@ -90,7 +93,7 @@ public class SkierClient {
             skierIdRange * i + 1,
                 skierIdRange * (i + 1),
             startTime, endTime, NUM_LIFTS,
-            runTimes, firstCountDown, secondCountDown, records, ip, port, logger);
+            runTimes, firstCountDown, secondCountDown, records, ip, port, logger, liftRideDao);
         executorService.execute(thread);
         phases.add(thread);
       }
@@ -113,7 +116,7 @@ public class SkierClient {
             skierIdRange * i + 1,
                 skierIdRange * (i + 1),
             startTime, endTime, NUM_LIFTS,
-            runTimes, firstCountDown, null, records, ip, port, logger);
+            runTimes, firstCountDown, null, records, ip, port, logger, liftRideDao);
         executorService.execute(thread);
         phases.add(thread);
       }
