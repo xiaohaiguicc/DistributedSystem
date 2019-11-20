@@ -1,0 +1,14 @@
+DAO/Statistics.class
+DAO/LiftRideDao.class
+DAO/ConnectionPoolContextListener.class
+Client/Part2/Data.class
+Client/Part1/Thread.class
+Server/SkierServlet.class
+Server/ResortServlet.class
+Server/NumericHelper.class
+Client/Part2/Record.class
+DAO/LiftRideDao$Task.class
+Server/StatisticsServlet.class
+DAO/LiftRide.class
+Client/Part1/SkierClient.class
+DAO/DBCPDataSource.class

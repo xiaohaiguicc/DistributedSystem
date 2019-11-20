@@ -16,7 +16,7 @@ public class DBCPDataSource {
   private static final String PORT = "3306";
   private static final String DATABASE = "LiftRides";
   private static final String USERNAME = "root";
-  private static final String PASSWORD = "1";
+  private static final String PASSWORD = "CCX67259VV";
 
   static {
     // https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-reference-jdbc-url-format.html
